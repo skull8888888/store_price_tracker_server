@@ -12,13 +12,9 @@ router.route('/stores')
 
         snapshot.forEach(childSnapshot => {
             
-            store = childSnapshot.val()
+            store = childSnapshot.val().info
 
-            stores.push({
-                name: store.name,
-                logoURL: store.logoURL,
-                storeId: childSnapshot.key
-            })
+            stores.push(store)
 
         })
 
@@ -28,9 +24,11 @@ router.route('/stores')
 
 })
 
-router.route('/random_user_id')
+router.route('/register')
 .get((req, res) => {
+
     const random_user_id = db.ref('TRACKERS').push().key
+
     res.json(random_user_id)
 })
 

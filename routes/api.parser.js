@@ -17,6 +17,15 @@ router.route('/')
         return 
     }
 
+    parse(link, storeId, result => {
+        res.json(result)
+    })
+
+})
+
+
+function parse(link, storeId, callback){
+
     db.ref(`STORES/${storeId}`).once('value', (snapshot) => {
         
         const store = snapshot.val()    
@@ -24,25 +33,42 @@ router.route('/')
         request.get(link, (err, response, body) => {
 
             if(err) {
-                res.json(err)
+                callback({
+                    success: false,
+                    error: err
+                })
                 return
             }
 
             const $ = cheerio.load(body)
 
+            const currentPrice = $(store.css.currentPrice)
+            const title = $(store.css.title)
+
+            if(currentPrice.length < 0 || title.length < 0) {
+                callback({
+                    success: false,
+                    error: 'unable to parse'
+                })
+                return
+            }
+
             const result = ineed.collect.images.hyperlinks.fromHtml(body)
 
-            res.json({
-                currentPrice: $(store.css.currentPrice).text(),
-                imageURL: result.images[0].src,
-                title: $(store.css.title).text()
+            callback({
+                success: true,
+                data: {
+                    currentPrice: currentPrice.text().replace(/\D/g,''),
+                    imageURL: result.images[0].src,
+                    title: title.text()
+                }
             })
 
         })
 
     })
+}
 
-
-})
+module.exports.parse = parse
 
 module.exports = router

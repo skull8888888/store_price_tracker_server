@@ -17,32 +17,11 @@ admin.initializeApp({
 const firebaseListener = require('./routes/api.firebase')
 const tracker = require('./routes/api.tracker')
 const parser = require('./routes/api.parser')
-const info = require('./routes/api.info')
+const db = require('./routes/api.db')
 
 app.use('/api/tracker', tracker)
-app.use('/api/info', info)
+app.use('/api/db', db)
 app.use('/api/parser', parser)
 
 app.listen(process.env.PORT || 3000)
 console.log('listening on port ' + (process.env.PORT || 3000))
-
-// exports.getProductInfo = functions.https.onCall((data, context) => {
-    
-	//     return request.get(data.productLink, (err, res, body) => {
-			
-	//         const $ = cheerio(body)
-	
-	//         db.ref(`STORES/${data.storeId}`).once('value', (snapshot) => {
-				
-	//             const store = snapshot.val()    
-	
-	//             return {
-	//                 title: $(store.titleCSS).text(),
-	//                 originalPrice: $(store.originalPriceCSS).text(),
-	//                 imageURL: $(store.imageURLCSS).text()
-	//             }
-	//         })
-	
-	//     })
-	
-	// })
