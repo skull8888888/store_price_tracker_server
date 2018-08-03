@@ -25,11 +25,13 @@ router.route('/stores')
 })
 
 router.route('/register')
-.get((req, res) => {
+.post((req, res) => {
 
+    const token = req.body.token
     const random_user_id = db.ref('TRACKERS').push().key
-
+    
     res.json(random_user_id)
+
 })
 
 

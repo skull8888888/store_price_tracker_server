@@ -12,7 +12,6 @@ router.route('/')
     const currentPrice = req.body.currentPrice
     const imageURL = req.body.imageURL
     const title = req.body.title
-    const token = req.body.token
 
     if(
         userId == undefined ||
@@ -20,8 +19,7 @@ router.route('/')
         storeId == undefined ||
         currentPrice == undefined ||
         imageURL == undefined ||
-        title == undefined ||
-        token == undefined
+        title == undefined 
     ) {
         res.sendStatus(500)
         return 
@@ -41,21 +39,5 @@ router.route('/')
     })
 
 })
-
-router.route('/:userId/:trackerId')
-.delete((req, res) => {
-    const userId = req.params.userId
-    const trackerId = req.params.trackerId
-
-    db.ref(`TRACKERS/${userId}/${trackerId}`)
-    .set(null)
-    .then(_ => {
-        res.sendStatus(200)
-    }
-    ).catch(err => {
-        res.sendStatus(500)
-    })
-})
-
 
 module.exports = router
