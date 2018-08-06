@@ -56,15 +56,15 @@ function ping(snapshot, userId){
                         originalPrice: originalPrice
                     }).then(_ => {
 
-                        // const message = {
-                        //     notification: {
-                        //         title: 'Скидка на товар ' + tracker.title,
-                        //         body: 'Скидка на товар ' + tracker.title,
-                        //     },
-                        //     token: tracker.token
-                        // }
+                        const message = {
+                            notification: {
+                                title: 'Скидка на товар ' + tracker.title,
+                                body: 'Скидка на товар ' + tracker.title,
+                            },
+                            token: tracker.token
+                        }
 
-                        // admin.messaging().send(message)
+                        admin.messaging().send(message)
                     })
                 }
 

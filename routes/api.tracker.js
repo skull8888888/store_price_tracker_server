@@ -12,6 +12,7 @@ router.route('/')
     const currentPrice = req.body.currentPrice
     const imageURL = req.body.imageURL
     const title = req.body.title
+    const token = req.body.token
 
     if(
         userId == undefined ||
@@ -19,7 +20,8 @@ router.route('/')
         storeId == undefined ||
         currentPrice == undefined ||
         imageURL == undefined ||
-        title == undefined 
+        title == undefined ||
+        token == undefined
     ) {
         res.sendStatus(500)
         return 
