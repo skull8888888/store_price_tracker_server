@@ -13,6 +13,7 @@ router.route('/stores')
         snapshot.forEach(childSnapshot => {
             
             store = childSnapshot.val().info
+            store.id = childSnapshot.key
 
             stores.push(store)
 
