@@ -55,11 +55,13 @@ function parse(link, storeId, callback){
 
             const result = ineed.collect.images.hyperlinks.fromHtml(body)
 
+            console.log(result.images[0])
+
             callback({
                 success: true,
                 data: {
                     currentPrice: currentPrice.text().replace(/\D/g,''),
-                    imageURL: result.images[0].src,
+                    imageURL: "https:" + result.images[0].src,
                     title: title.text()
                 }
             })
