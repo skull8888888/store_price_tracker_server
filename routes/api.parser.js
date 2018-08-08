@@ -16,8 +16,9 @@ router.route('/')
         res.sendStatus(500)
         return 
     }
-
+    console.log("request for parse")
     parse(link, storeId, result => {
+        console.log(result)
         res.json(result)
     })
 
@@ -54,8 +55,6 @@ function parse(link, storeId, callback){
             }
 
             const result = ineed.collect.images.hyperlinks.fromHtml(body)
-
-            console.log(result.images[0])
 
             callback({
                 success: true,
