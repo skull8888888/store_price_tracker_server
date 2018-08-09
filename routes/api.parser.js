@@ -2,9 +2,13 @@ const express = require('express')
 const router = express.Router()
 const admin = require('firebase-admin')
 const db = admin.database()
-const request = require('request')
+const rp = require('request-promise')
 const cheerio = require('cheerio')
 const ineed = require('ineed')
+const requestImageSize = require('request-image-size')
+const url = require('url')
+
+
 
 router.route('/')
 .post((req, res) => {
@@ -16,32 +20,45 @@ router.route('/')
         res.sendStatus(500)
         return 
     }
-    console.log("request for parse")
-    parse(link, storeId, result => {
-        console.log(result)
+    
+    const storeURL = new url.URL(link)
+
+    const parsedLink = storeURL.protocol + storeURL.host + storeURL.pathname
+
+
+    parse(link, storeId).then(result => {
         res.json(result)
+    }).catch(error => {
+        res.sendStatus(500)
     })
 
 })
 
 
-function parse(link, storeId, callback){
+const parse = (link, storeId, callback) => {
 
-    db.ref(`STORES/${storeId}`).once('value', (snapshot) => {
-        
+    return new Promise(async (resolve, reject) => {
+        const snapshot = await db.ref(`STORES/${storeId}`).once('value')
+
         const store = snapshot.val()    
         
-        request.get(link, (err, response, body) => {
+        var options = {
+            uri: link,
+            transform: function (body) {
 
-            if(err) {
-                callback({
-                    success: false,
-                    error: err
-                })
-                return
+                return {
+                    images: ineed.collect.images.fromHtml(body).images,
+                    $: cheerio.load(body)
+                }
+
             }
+        }
 
-            const $ = cheerio.load(body)
+        try {
+            const result = await rp(options)
+
+            const $ = result.$
+            const images = result.images
 
             const currentPrice = $(store.css.currentPrice)
             const title = $(store.css.title)
@@ -54,20 +71,43 @@ function parse(link, storeId, callback){
                 return
             }
 
-            const result = ineed.collect.images.hyperlinks.fromHtml(body)
+            const image = await findSuitableImage(images.filter((item) => item.alt.length > 0))
 
-            callback({
-                success: true,
-                data: {
-                    currentPrice: currentPrice.text().replace(/\D/g,''),
-                    imageURL: "https:" + result.images[0].src,
-                    title: title.text()
-                }
-            })
+            resolve({
+                    success: true,
+                    data: {
+                        currentPrice: currentPrice.text().replace(/\D/g,'') + ' тг',
+                        imageURL: image,
+                        title: title.text()
+                    }
+                })
 
-        })
-
+        } catch (error){
+            reject(error)
+        }
     })
+
+}
+
+const findSuitableImage = async (array) => {
+    
+    let maxSize = 0
+    let imageSrc = ''
+    
+    for (const i in array) {
+
+        const image = array[i]
+        const size = await requestImageSize('https:' + image.src)
+
+        const multiple = size.width * size.height
+
+        if(multiple > maxSize) {
+            maxSize = multiple
+            imageSrc = 'https:' + image.src
+        }
+    }
+
+    return imageSrc
 }
 
 module.exports.parse = parse

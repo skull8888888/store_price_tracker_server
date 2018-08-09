@@ -13,6 +13,8 @@
     "express": "~4.13.4",
     "firebase-admin": "^5.13.1",
     "ineed": "^1.0.4",
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "request-image-size": "^2.1.0",
+    "request-promise": "^4.2.2"
   }
 }

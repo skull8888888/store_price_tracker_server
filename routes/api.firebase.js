@@ -106,8 +106,8 @@ db.ref('TRACKERS').on('child_changed', snapshot => {
 	beginTrackingItemForUser(userId)
 })
 
-db.ref('TRACKERS').on('child_added', snapshot => {
-	const userId = snapshot.key
-	console.log('began tracking ', userId)
-	beginTrackingItemForUser(userId)
-})
+// db.ref('TRACKERS').on('child_added', snapshot => {
+// 	const userId = snapshot.key
+// 	console.log('began tracking ', userId)
+// 	beginTrackingItemForUser(userId)
+// })
