@@ -42,14 +42,8 @@ function ping(snapshot, userId){
                     _notificationType: 'local_notification',
                 }
             }
-            // console.log("message sent to -> ", tracker.token)
+
             admin.messaging().sendToDevice(tracker.token, message)
-            .then(res => {
-                console.log("success =>", res)
-            })
-            .catch(err => {
-                console.log(err)
-            })
             return
         }
 
@@ -90,8 +84,6 @@ function ping(snapshot, userId){
                     console.log(originalPrice.text(), currentPrice.text())
                 }
 
-				// console.log(body)
-              
             })
 
         })
@@ -106,8 +98,8 @@ db.ref('TRACKERS').on('child_changed', snapshot => {
 	beginTrackingItemForUser(userId)
 })
 
-// db.ref('TRACKERS').on('child_added', snapshot => {
-// 	const userId = snapshot.key
-// 	console.log('began tracking ', userId)
-// 	beginTrackingItemForUser(userId)
-// })
+db.ref('TRACKERS').on('child_added', snapshot => {
+	const userId = snapshot.key
+	console.log('began tracking ', userId)
+	beginTrackingItemForUser(userId)
+})
