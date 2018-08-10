@@ -16,7 +16,7 @@ function beginTrackingItemForUser(userId){
 
         } else {
             
-            pingInterval = setInterval(ping, 10 * 1000, snapshot, userId)
+            pingInterval = setInterval(ping, 24 * 60 * 1000, snapshot, userId)
     
         }
     })
